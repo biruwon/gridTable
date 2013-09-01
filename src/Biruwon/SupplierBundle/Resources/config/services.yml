@@ -1,0 +1,7 @@
+parameters:
+#    supplier.example.class: Biruwon\SupplierBundle\Example
+
+services:
+#    supplier.example:
+#        class: %supplier.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

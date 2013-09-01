@@ -1,0 +1,4 @@
+supplier:
+    resource: "@SupplierBundle/Resources/config/routing.yml"
+    prefix:   /
+
