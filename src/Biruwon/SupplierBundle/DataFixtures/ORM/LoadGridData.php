@@ -42,7 +42,7 @@ class LoadGridData extends AbstractFixture
         }
 
         //Create products
-        for($i=0; $i<999; $i++){
+        for($i=0; $i<=999; $i++){
             $product = new Product();
             $product->setName('Product'.$i);
             $product->setPrice(rand(1,10));

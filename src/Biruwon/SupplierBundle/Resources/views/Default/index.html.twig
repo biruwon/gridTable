@@ -1,1 +1,48 @@
-Hello {{ name }}!
+
+{#<table>
+	<tr>
+		<th>Product</th><th>Units Sold</th><th>Total Cost</th><th>Total Revenue</th><th>Total Profit</th>
+	</tr>
+{% for product in products %}
+	<tr>
+		<td>{{ product.name }}</td>
+		<td></td>
+	</tr>
+{% endfor %}
+</table>}#}
+
+<table id="gridTable">
+</table>
+
+{% stylesheets
+ 	'@SupplierBundle/Resources/public/css/*' %}
+ 	<link rel="stylesheet" href="{{ asset_url }}" />
+{% endstylesheets %}
+
+{% javascripts
+	'@SupplierBundle/Resources/public/js/jquery-1.9.0.min.js'
+	'@SupplierBundle/Resources/public/js/*' %}
+	<script src="{{ asset_url }}"></script>
+{% endjavascripts %}
+
+<script type="text/javascript">
+
+		$("#gridTable").jqGrid({
+			datatype: "local",
+		   	colNames:['Product','Units Sold', 'Total Cost', 'Total Revenue','Total Profit'],
+		   	colModel:[
+		   		{name:'name', index:'name', width:100, align:"center"},
+		   		{name:'units', index:'units', width:100, align:"center", sorttype:"int"},
+		   		{name:'cost',index:'cost', width:100, align:"center ",sorttype:"float"},
+		   		{name:'revenue',index:'revenue', width:100, align:"center",sorttype:"float"},
+		   		{name:'profit',index:'profit', width:100,align:"center",sorttype:"float"},
+		   	],
+		});
+		var mydata = [
+				{name:"Product1",units:"2000",cost:"100",revenue:"110",profit:"10"},
+				{name:"Product1",units:"2000",cost:"100",revenue:"110",profit:"10"},
+				{name:"Product1",units:"2000",cost:"100",revenue:"110",profit:"10"}
+				];
+		for(var i=0;i<=mydata.length;i++)
+			$("#gridTable").jqGrid('addRowData',i+1,mydata[i]);
+	</script>
