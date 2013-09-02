@@ -11,23 +11,17 @@ class DefaultController extends Controller
     public function indexAction()
     {
     	$em = $this->getDoctrine()->getManager();
-    	// $repository = $this->getDoctrine()
-    	// 	->getRepository('SupplierBundle:Product');
 
-    	// $query = $repository->createQueryBuilder('p')
-    	//     ->getQuery();
+    	$repository = $em->getRepository('SupplierBundle:Product');
 
-    	// $dql = $query->getDql();
+    	$query = $repository->createQueryBuilder('p')
+            ->setFirstResult(1)
+            ->setMaxResults(10)
+    	    ->getQuery();
 
-    	// $query = $em->createQuery($dql)
-    	//                        ->setFirstResult(1)
-    	//                        ->setMaxResults(5);
+        $products = $query->getResult();
 
-    	// $paginator = new Paginator($query, $fetchJoinCollection = true);
-
-    	// var_dump(count($paginator));
-    	// die();
-    	$products = $em->getRepository('SupplierBundle:Product')->findAll();
+    	//$products = $em->getRepository('SupplierBundle:Product')->findAll();
 
         return $this->render('SupplierBundle:Default:index.html.twig', array(
         	'products' => $products

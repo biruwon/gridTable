@@ -1,21 +1,8 @@
-
-{#<table>
-	<tr>
-		<th>Product</th><th>Units Sold</th><th>Total Cost</th><th>Total Revenue</th><th>Total Profit</th>
-	</tr>
-{% for product in products %}
-	<tr>
-		<td>{{ product.name }}</td>
-		<td></td>
-	</tr>
-{% endfor %}
-</table>}#}
-
 <table id="gridTable">
+	<div id="pager">
 </table>
 
-{% stylesheets
- 	'@SupplierBundle/Resources/public/css/*' %}
+{% stylesheets 'bundles/supplier/css/*' filter='cssrewrite' %}
  	<link rel="stylesheet" href="{{ asset_url }}" />
 {% endstylesheets %}
 
@@ -27,22 +14,21 @@
 
 <script type="text/javascript">
 
-		$("#gridTable").jqGrid({
-			datatype: "local",
+		var path = '{{ path("supplier_homepage") }}';
+		$('#gridTable').jqGrid({
+			url: path,
+			datatype: 'json',
 		   	colNames:['Product','Units Sold', 'Total Cost', 'Total Revenue','Total Profit'],
 		   	colModel:[
-		   		{name:'name', index:'name', width:100, align:"center"},
-		   		{name:'units', index:'units', width:100, align:"center", sorttype:"int"},
-		   		{name:'cost',index:'cost', width:100, align:"center ",sorttype:"float"},
-		   		{name:'revenue',index:'revenue', width:100, align:"center",sorttype:"float"},
-		   		{name:'profit',index:'profit', width:100,align:"center",sorttype:"float"},
+		   		{name:'name', index:'name', width:100, align:'center'},
+		   		{name:'units', index:'units', width:100, align:'center', sorttype:'int'},
+		   		{name:'cost',index:'cost', width:100, align:'center ',sorttype:'float'},
+		   		{name:'revenue',index:'revenue', width:100, align:'center',sorttype:'float'},
+		   		{name:'profit',index:'profit', width:100,align:"center",sorttype:'float'}
 		   	],
+		   	rowNum: 10,
+		   	rowList: [10, 20, 30],
+		   	pager: '#pager',
+		   	viewrecords: true,
 		});
-		var mydata = [
-				{name:"Product1",units:"2000",cost:"100",revenue:"110",profit:"10"},
-				{name:"Product1",units:"2000",cost:"100",revenue:"110",profit:"10"},
-				{name:"Product1",units:"2000",cost:"100",revenue:"110",profit:"10"}
-				];
-		for(var i=0;i<=mydata.length;i++)
-			$("#gridTable").jqGrid('addRowData',i+1,mydata[i]);
 	</script>
