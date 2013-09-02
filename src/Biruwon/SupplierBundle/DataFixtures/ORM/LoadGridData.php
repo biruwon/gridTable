@@ -42,7 +42,7 @@ class LoadGridData extends AbstractFixture
         }
 
         //Create products
-        for($i=0; $i<=999; $i++){
+        for($i=1; $i<=1000; $i++){
             $product = new Product();
             $product->setName('Product'.$i);
             $product->setPrice(rand(1,10));
@@ -56,23 +56,26 @@ class LoadGridData extends AbstractFixture
         $products = $manager->getRepository('SupplierBundle:Product')->findAll();
 
         foreach($stores as $store){
-            $orderItem = new OrderItem();
+            for($i=1; $i<=5; $i++){
+                
+                $orderItem = new OrderItem();
 
-            $orderItem->setStoreId($store->getId());
+                $orderItem->setStoreId($store->getId());
 
-            $index = array_rand($products);
-            $productId = $products[$index]->getId();
-            $orderItem->setProductId($productId);
+                $index = array_rand($products);
+                $productId = $products[$index]->getId();
+                $orderItem->setProductId($productId);
 
-            $amount = rand(1, 50);
-            $orderItem->setAmount($amount);
+                $amount = rand(1, 50);
+                $orderItem->setAmount($amount);
 
-            $revenue = $amount * $products[$index]->getPrice();
-            $percentage = $revenue*0.1;
-            $cost = $revenue + rand(-$percentage, $percentage);
-            $orderItem->setCost($cost);
+                $revenue = $amount * $products[$index]->getPrice();
+                $percentage = $revenue*0.1;
+                $cost = $revenue + rand(-$percentage, $percentage);
+                $orderItem->setCost($cost);
 
-            $manager->persist($orderItem);
+                $manager->persist($orderItem);
+            }
         }
 
         $manager->flush();

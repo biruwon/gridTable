@@ -1,3 +1,9 @@
 supplier_homepage:
     pattern:  /
-    defaults: { _controller: SupplierBundle:Default:index }
+    defaults:
+        _controller: FrameworkBundle:Template:template
+        template: 'SupplierBundle:Default:index.html.twig'
+
+supplier_productData:
+    pattern:  /dataGrid
+    defaults: { _controller: SupplierBundle:Default:productData }
