@@ -15,22 +15,22 @@ class OrderItem
     /**
      * @var integer
      *
-     * @ORM\Column(name="product_id", type="integer")
+     * @ORM\Column(name="product", type="integer")
      * @ORM\ManyToOne(targetEntity="Product")
-     * @ORM\JoinColumn(name="product_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="product", referencedColumnName="id")
      * @ORM\Id
      */
-    private $product_id;
+    private $product;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="store_id", type="integer")
-     * @ORM\ManyToOne(targetEntity="Store")
-     * @ORM\JoinColumn(name="store_id", referencedColumnName="id")
+     * @ORM\Column(name="order", type="integer")
+     * @ORM\ManyToOne(targetEntity="Order")
+     * @ORM\JoinColumn(name="order", referencedColumnName="id")
      * @ORM\Id
      */
-    private $store_id;
+    private $order;
 
     /**
      * @var integer
@@ -46,73 +46,81 @@ class OrderItem
      */
     private $amount;
 
+    public function __construct(Product $product, Order $order, $cost = null, $amount = 1)
+    {
+        $this->product = $product;
+        $this->order = $order;
+        $this->cost = $cost;
+        $this->amount = $amount;
+    }
+
+    /**
+     * Set product
+     *
+     * @param integer $product
+     * @return OrderItem
+     */
+    public function setProduct($product)
+    {
+        $this->product = $product;
+    
+        return $this;
+    }
+
+    /**
+     * Get product
+     *
+     * @return integer 
+     */
+    public function getProduct()
+    {
+        return $this->product;
+    }
+
+    /**
+     * Set order
+     *
+     * @param integer $order
+     * @return OrderItem
+     */
+    public function setOrder($order)
+    {
+        $this->order = $order;
+    
+        return $this;
+    }
+
+    /**
+     * Get order
+     *
+     * @return integer 
+     */
+    public function getOrder()
+    {
+        return $this->order;
+    }
+
     /**
      * Set cost
      *
      * @param integer $cost
-     * @return StoreOrder
+     * @return OrderItem
      */
     public function setCost($cost)
     {
         $this->cost = $cost;
-
+    
         return $this;
     }
 
     /**
      * Get cost
      *
-     * @return integer
+     * @return integer 
      */
     public function getCost()
     {
         return $this->cost;
-    }
-
-    /**
-     * Set product_id
-     *
-     * @param integer $productId
-     * @return OrderItem
-     */
-    public function setProductId($productId)
-    {
-        $this->product_id = $productId;
-
-        return $this;
-    }
-
-    /**
-     * Get product_id
-     *
-     * @return integer
-     */
-    public function getProductId()
-    {
-        return $this->product_id;
-    }
-
-    /**
-     * Set store_id
-     *
-     * @param integer $storeId
-     * @return OrderItem
-     */
-    public function setStoreId($storeId)
-    {
-        $this->store_id = $storeId;
-
-        return $this;
-    }
-
-    /**
-     * Get store_id
-     *
-     * @return integer
-     */
-    public function getStoreId()
-    {
-        return $this->store_id;
     }
 
     /**
@@ -124,14 +132,14 @@ class OrderItem
     public function setAmount($amount)
     {
         $this->amount = $amount;
-
+    
         return $this;
     }
 
     /**
      * Get amount
      *
-     * @return integer
+     * @return integer 
      */
     public function getAmount()
     {

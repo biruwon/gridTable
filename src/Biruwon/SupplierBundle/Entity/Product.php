@@ -35,6 +35,16 @@ class Product
      */
     private $price;
 
+    public function __construct($name, $price = null)
+    {
+        $this->name = $name;
+        $this->price = $price;
+    }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
 
     /**
      * Get id

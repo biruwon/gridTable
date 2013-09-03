@@ -8,6 +8,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Biruwon\SupplierBundle\Entity\Country,
     Biruwon\SupplierBundle\Entity\Store,
     Biruwon\SupplierBundle\Entity\Product,
+    Biruwon\SupplierBundle\Entity\Order,
     Biruwon\SupplierBundle\Entity\OrderItem;
 
 class LoadGridData extends AbstractFixture
@@ -25,8 +26,8 @@ class LoadGridData extends AbstractFixture
             );
 
         foreach($countries as $key => $countryName){
-            $country = new Country();
-            $country->setName($countryName);
+
+            $country = new Country($countryName);
             $manager->persist($country);
             $this->addReference('country'.$key, $country);
         }
@@ -34,46 +35,48 @@ class LoadGridData extends AbstractFixture
         //Create stores
         for($i=0; $i<count($countries); $i++){
             for($j=1; $j<=5; $j++){
-                $store = new Store();
-                $store->setName('Store'.$j);
-                $store->setCountry($this->getReference('country'.$i));
+
+                $store = new Store('Store'.$j, $this->getReference('country'.$i));
                 $manager->persist($store);
             }
         }
 
         //Create products
         for($i=1; $i<=1000; $i++){
-            $product = new Product();
-            $product->setName('Product'.$i);
-            $product->setPrice(rand(1,10));
+
+            $product = new Product('Product'.$i, rand(1, 10));
             $manager->persist($product);
         }
 
         $manager->flush();
 
-        //Create order items
         $stores = $manager->getRepository('SupplierBundle:Store')->findAll();
         $products = $manager->getRepository('SupplierBundle:Product')->findAll();
 
+        //Create order
         foreach($stores as $store){
-            for($i=1; $i<=5; $i++){
+
+            $order = new Order($store);
+            $manager->persist($order);
+            $manager->flush();
+            //var_dump($order);
+
+            for($i=1; $i<=3; $i++){
                 
-                $orderItem = new OrderItem();
-
-                $orderItem->setStoreId($store->getId());
-
                 $index = array_rand($products);
-                $productId = $products[$index]->getId();
-                $orderItem->setProductId($productId);
+                $product = $products[$index];
 
                 $amount = rand(1, 50);
-                $orderItem->setAmount($amount);
 
                 $revenue = $amount * $products[$index]->getPrice();
                 $percentage = $revenue*0.1;
                 $cost = $revenue + rand(-$percentage, $percentage);
-                $orderItem->setCost($cost);
 
+                $orderItem = new OrderItem($product, $order, $amount, $cost);
+
+                $order->getItems()->add($orderItem);
+                // $manager->persist($order);
+                var_dump($orderItem);
                 $manager->persist($orderItem);
             }
         }

@@ -36,11 +36,16 @@ class Store
      */
     private $country;
 
+    public function __construct($name, Country $country)
+    {
+        $this->name = $name;
+        $this->country = $country;
+    }
+
     public function __toString()
     {
         return $this->name;
     }
-
 
     /**
      * Get id
