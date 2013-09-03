@@ -59,10 +59,9 @@ class LoadGridData extends AbstractFixture
             $order = new Order($store);
             $manager->persist($order);
             $manager->flush();
-            //var_dump($order);
 
             for($i=1; $i<=3; $i++){
-                
+
                 $index = array_rand($products);
                 $product = $products[$index];
 
@@ -75,8 +74,6 @@ class LoadGridData extends AbstractFixture
                 $orderItem = new OrderItem($product, $order, $amount, $cost);
 
                 $order->getItems()->add($orderItem);
-                // $manager->persist($order);
-                var_dump($orderItem);
                 $manager->persist($orderItem);
             }
         }

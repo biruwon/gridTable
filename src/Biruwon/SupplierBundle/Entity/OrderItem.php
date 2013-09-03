@@ -15,20 +15,23 @@ class OrderItem
     /**
      * @var integer
      *
-     * @ORM\Column(name="product", type="integer")
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(name="product")
      * @ORM\ManyToOne(targetEntity="Product")
      * @ORM\JoinColumn(name="product", referencedColumnName="id")
-     * @ORM\Id
      */
     private $product;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="order", type="integer")
+     * @ORM\Column(name="orderItem")
      * @ORM\ManyToOne(targetEntity="Order")
      * @ORM\JoinColumn(name="order", referencedColumnName="id")
-     * @ORM\Id
      */
     private $order;
 
@@ -52,6 +55,16 @@ class OrderItem
         $this->order = $order;
         $this->cost = $cost;
         $this->amount = $amount;
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
