@@ -45,7 +45,7 @@ class LoadGridData extends AbstractFixture
         }
 
         //Create products
-        for($i=1; $i<=3; $i++){
+        for($i=1; $i<=1000; $i++){
 
             $product = new Product('Product'.$i, rand(1, 10));
             $manager->persist($product);
@@ -65,7 +65,7 @@ class LoadGridData extends AbstractFixture
 
         //Create order
         foreach($orders as $order){
-            for($i=1; $i<=1; $i++){
+            for($i=1; $i<=10; $i++){
 
                 $index = array_rand($products);
                 $product = $products[$index];
@@ -76,7 +76,7 @@ class LoadGridData extends AbstractFixture
                 $percentage = $revenue*0.1;
                 $cost = $revenue + rand(-$percentage, $percentage);
 
-                $orderItem = new OrderItem($product, $order, $amount, $cost);
+                $orderItem = new OrderItem($product, $order, $cost, $amount);
 
                 $order->getItems()->add($orderItem);
                 $manager->persist($orderItem);

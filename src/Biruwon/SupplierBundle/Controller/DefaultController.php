@@ -33,7 +33,7 @@ class DefaultController extends Controller
 
     public function productDataAction(Request $request)
     {
-        //if($request->isXmlHttpRequest()){
+        if($request->isXmlHttpRequest()){
 
             $em = $this->getDoctrine()->getManager();
 
@@ -43,7 +43,7 @@ class DefaultController extends Controller
                   FROM SupplierBundle:Product p
                   LEFT JOIN SupplierBundle:OrderItem o
                   WHERE p.id = o.product
-                  GROUP BY p.name
+                  GROUP BY p.id
                   '
             );
 
@@ -51,17 +51,18 @@ class DefaultController extends Controller
             $query->setFirstResult(0);
 
             $products = $query->getResult();
-            foreach($products as $product){
-                var_dump($product);
+            foreach($products as $key => $product){
+                $productsToEncode[$key]['name'] = $product['name'];
+                $productsToEncode[$key]['totalUnits'] = $product['totalUnits'];
+                $productsToEncode[$key]['totalCost'] = $product['totalCost'];
+                $productsToEncode[$key]['totalRevenue'] = $product['totalRevenue'];
+                $productsToEncode[$key]['profit'] = $product['totalRevenue'] - $product['totalCost'];
             }
-            die();
 
             $response = new JsonResponse();
-            $response->setData(array(
-                'data' => 123
-            ));
-        //}
+            $response->setData($productsToEncode);
+        }
 
-        return $this->redirect($this->generateUrl('supplier_homepage'));
+        return $response;
     }
 }
