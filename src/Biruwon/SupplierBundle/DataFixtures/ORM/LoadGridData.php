@@ -29,43 +29,48 @@ class LoadGridData extends AbstractFixture
 
             $country = new Country($countryName);
             $manager->persist($country);
-            $this->addReference('country'.$key, $country);
+            $this->addReference('country'.($key+1), $country);
         }
 
         //Create stores
-        for($i=0; $i<count($countries); $i++){
-            for($j=1; $j<=5; $j++){
+        $storeIndex = 0;
+        for($i=1; $i<=count($countries); $i++){
+            for($j=1; $j<=10; $j++){
 
+                $storeIndex++;
                 $store = new Store('Store'.$j, $this->getReference('country'.$i));
                 $manager->persist($store);
+                $this->addReference('store'.$storeIndex, $store);
             }
         }
 
         //Create products
-        for($i=1; $i<=1000; $i++){
+        for($i=1; $i<=3; $i++){
 
             $product = new Product('Product'.$i, rand(1, 10));
             $manager->persist($product);
         }
 
+        //Create orders
+        for($i=1; $i<=(count($countries)*10); $i++){
+
+            $order = new Order($this->getReference('store'.$i));
+            $manager->persist($order);
+        }
+
         $manager->flush();
 
-        $stores = $manager->getRepository('SupplierBundle:Store')->findAll();
+        $orders = $manager->getRepository('SupplierBundle:Order')->findAll();
         $products = $manager->getRepository('SupplierBundle:Product')->findAll();
 
         //Create order
-        foreach($stores as $store){
-
-            $order = new Order($store);
-            $manager->persist($order);
-            $manager->flush();
-
-            for($i=1; $i<=3; $i++){
+        foreach($orders as $order){
+            for($i=1; $i<=1; $i++){
 
                 $index = array_rand($products);
                 $product = $products[$index];
 
-                $amount = rand(1, 50);
+                $amount = rand(1, 100);
 
                 $revenue = $amount * $products[$index]->getPrice();
                 $percentage = $revenue*0.1;

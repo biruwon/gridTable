@@ -29,7 +29,7 @@ class OrderItem
     private $product;
 
     /**
-     * @ORM\Column(name="orderItem")
+     * @ORM\Column(name="orderItems")
      * @ORM\ManyToOne(targetEntity="Order")
      * @ORM\JoinColumn(name="order", referencedColumnName="id")
      */

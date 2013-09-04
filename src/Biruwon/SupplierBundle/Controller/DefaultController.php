@@ -38,21 +38,17 @@ class DefaultController extends Controller
             $em = $this->getDoctrine()->getManager();
 
             $query = $em->createQuery(
-                'SELECT DISTINCT(p.name), o
+                'SELECT p.name, sum(o.amount) as totalUnits, sum(o.cost) as totalCost,
+                sum(o.amount*p.price) as totalRevenue
                   FROM SupplierBundle:Product p
                   LEFT JOIN SupplierBundle:OrderItem o
-                  WHERE p.id = o.product_id
+                  WHERE p.id = o.product
                   GROUP BY p.name
                   '
             );
 
             $query->setMaxResults(10);
             $query->setFirstResult(0);
-
-            // $query = $repository->createQueryBuilder('p')
-            //         ->setFirstResult(1)
-            //         ->setMaxResults(10)
-            //         ->getQuery();
 
             $products = $query->getResult();
             foreach($products as $product){
