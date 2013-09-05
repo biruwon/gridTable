@@ -4,6 +4,12 @@
 
 {% stylesheets 'bundles/supplier/css/*' filter='cssrewrite' %}
  	<link rel="stylesheet" href="{{ asset_url }}" />
+ 	<style>
+ 		.ui-jqgrid {
+    		margin: 0 auto;
+    		top: 25%;
+		}
+ 	</style>
 {% endstylesheets %}
 
 {% javascripts
@@ -15,20 +21,47 @@
 <script type="text/javascript">
 
 		var path = '{{ path("supplier_productData") }}';
-		$('#gridTable').jqGrid({
+		var grid = $('#gridTable');
+		grid.jqGrid({
 			url: path,
 			datatype: 'json',
-		   	colNames:['Product','Units Sold', 'Total Cost', 'Total Revenue','Total Profit'],
+		   	colNames:['Index' ,'Product','Units Sold', 'Total Cost', 'Total Revenue','Total Profit'],
 		   	colModel:[
+		   		{name:'id', index:'id', width:60, sorttype:"int", hidden: true },
 		   		{name:'name', index:'name', width:100, align:'center'},
 		   		{name:'totalUnits', index:'units', width:100, align:'center', sorttype:'int'},
 		   		{name:'totalCost',index:'cost', width:100, align:'center ',sorttype:'float'},
-		   		{name:'totalRevenue',index:'revenue', width:100, align:'center',sorttype:'float'},
+		   		{name:'totalRevenue',index:'revenue', width:120, align:'center',sorttype:'float'},
 		   		{name:'profit',index:'profit', width:100,align:"center",sorttype:'float'}
 		   	],
 		   	rowNum: 10,
 		   	rowList: [10, 20, 30],
 		   	pager: '#pager',
-		   	viewrecords: true,
+		   	jsonReader: {
+		   	    root: 'rows',
+		   	    page:  'page',
+		   	    total: 'total',
+		   	    records: 'records'
+		   	}
+		   	// Set cell color/font
+		   	/*loadComplete: function() {
+                var columnNames = grid.jqGrid('getGridParam', 'colNames');
+                var ids = grid.jqGrid('getDataIDs');
+                for (var j=0;j<columnNames.length;j++){
+                	var column = columnNames[j];
+                	for (var i=0;i<ids.length;i++) {
+                	    var id=ids[i];
+                	    if (grid.jqGrid('getCell',id,column) === '') {
+                	     	grid.jqGrid('setCell',id,column, '', {'background-color':'#DDDDDD'});
+
+                	    }
+                	}
+                }
+            }*/
+            // Label page size
+            // loadComplete: function () {
+            // 	$('.ui-pg-selbox').closest("td").before("<td dir='ltr'>Page size</td>");
+            // }
+
 		});
 	</script>

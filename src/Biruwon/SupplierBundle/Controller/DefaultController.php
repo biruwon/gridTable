@@ -47,16 +47,29 @@ class DefaultController extends Controller
                   '
             );
 
-            $query->setMaxResults(10);
+            $query->setMaxResults(5);
             $query->setFirstResult(0);
 
             $products = $query->getResult();
+
+            $allProducts = $em->getRepository('SupplierBundle:Product')->findAll();
+            $records = count($allProducts);
+            $total = ceil($records/5); //Change page and check errors
+
+            $productsToEncode['rows'] = array();
+            $productsToEncode['page'] = 1;
+            $productsToEncode['total'] = $total;
+            $productsToEncode['records'] = $records;
+
             foreach($products as $key => $product){
-                $productsToEncode[$key]['name'] = $product['name'];
-                $productsToEncode[$key]['totalUnits'] = $product['totalUnits'];
-                $productsToEncode[$key]['totalCost'] = $product['totalCost'];
-                $productsToEncode[$key]['totalRevenue'] = $product['totalRevenue'];
-                $productsToEncode[$key]['profit'] = $product['totalRevenue'] - $product['totalCost'];
+                $child['id'] = $key;
+                $child['name'] = $product['name'];
+                $child['totalUnits'] = $product['totalUnits'];
+                $child['totalCost'] = $product['totalCost'];
+                $child['totalRevenue'] = $product['totalRevenue'];
+                $child['profit'] = $product['totalRevenue'] - $product['totalCost'];
+
+                array_push($productsToEncode['rows'], $child);
             }
 
             $response = new JsonResponse();
