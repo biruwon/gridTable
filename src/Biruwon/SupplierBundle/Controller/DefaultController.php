@@ -5,31 +5,24 @@ namespace Biruwon\SupplierBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Biruwon\SupplierBundle\Entity\Product;
+use Biruwon\SupplierBundle\Form\CountrySelect;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
 {
-    // public function indexAction()
-    // {
-    // 	$em = $this->getDoctrine()->getManager();
+    public function indexAction()
+    {
+        $em = $this->getDoctrine()->getManager();
 
-    // 	$repository = $em->getRepository('SupplierBundle:Product');
+        $countries = $em->getRepository('SupplierBundle:Country')->findAll();
 
-    // 	$query = $repository->createQueryBuilder('p')
-    //         ->setFirstResult(1)
-    //         ->setMaxResults(10)
-    // 	    ->getQuery();
+        $form = $this->createForm(new CountrySelect(), $countries);
 
-    //     $products = $query->getResult();
-
-    // 	//$products = $em->getRepository('SupplierBundle:Product')->findAll();
-
-    //     return $this->render('SupplierBundle:Default:index.html.twig', array(
-    //     	'products' => $products
-    //     	)
-    //     );
-    // }
+        return $this->render('SupplierBundle:Default:index.html.twig', array(
+            'form' => $form->createView()
+        ));
+    }
 
     public function productDataAction(Request $request)
     {
@@ -64,6 +57,7 @@ class DefaultController extends Controller
             $productsToEncode['page'] = $page;
             $productsToEncode['total'] = $total;
             $productsToEncode['records'] = $records;
+            // $productsToEncode['lastPage'] = $total;
 
             foreach($products as $key => $product){
                 $child['id'] = $key;
