@@ -35,6 +35,10 @@ class DefaultController extends Controller
     {
         if($request->isXmlHttpRequest()){
 
+            $rows = $request->get('rows');
+            $page = $request->get('page');
+            $offset = ($rows*$page) - $rows;
+
             $em = $this->getDoctrine()->getManager();
 
             $query = $em->createQuery(
@@ -47,17 +51,17 @@ class DefaultController extends Controller
                   '
             );
 
-            $query->setMaxResults(5);
-            $query->setFirstResult(0);
+            $records = count($query->getScalarResult()); //Total rows
+
+            $query->setMaxResults($rows);
+            $query->setFirstResult($offset);
 
             $products = $query->getResult();
 
-            $allProducts = $em->getRepository('SupplierBundle:Product')->findAll();
-            $records = count($allProducts);
-            $total = ceil($records/5); //Change page and check errors
+            $total = ceil($records/$rows); //Change page and check errors
 
             $productsToEncode['rows'] = array();
-            $productsToEncode['page'] = 1;
+            $productsToEncode['page'] = $page;
             $productsToEncode['total'] = $total;
             $productsToEncode['records'] = $records;
 
