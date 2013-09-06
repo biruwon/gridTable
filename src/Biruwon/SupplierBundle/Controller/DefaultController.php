@@ -28,8 +28,10 @@ class DefaultController extends Controller
     {
         if($request->isXmlHttpRequest()){
 
+            //Check if params exists
             $rows = $request->get('rows');
             $page = $request->get('page');
+            $countryId = $request->get('countryId');
             $offset = ($rows*$page) - $rows;
 
             $em = $this->getDoctrine()->getManager();

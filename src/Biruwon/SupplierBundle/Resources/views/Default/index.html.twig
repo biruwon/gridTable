@@ -1,18 +1,29 @@
-{{ form(form) }}
 
-<table id="gridTable">
-	<div id="pager">
-</table>
+<div class="container">
+	<div class="content">
+		{{ form(form) }}
+
+		<table id="gridTable">
+			<div id="pager">
+		</table>
+	</div>
+</div>
 
 {% stylesheets 'bundles/supplier/css/*' filter='cssrewrite' %}
  	<link rel="stylesheet" href="{{ asset_url }}" />
- 	<style>
- 		.ui-jqgrid {
-    		margin: 0 auto;
-    		margin-top: 10%;
-		}
- 	</style>
 {% endstylesheets %}
+<style>
+	.container {
+		height: 100%;
+		width: 100%;
+	}
+
+	.content {
+		margin: 0 auto;
+		margin-top: 10%;
+		width: 500px;
+	}
+</style>
 
 {% javascripts
 	'@SupplierBundle/Resources/public/js/jquery-1.9.0.min.js'
@@ -21,6 +32,14 @@
 {% endjavascripts %}
 
 <script type="text/javascript">
+
+		$('#country_countries').on('change', function() {
+			grid.setGridParam({
+				postData: {
+					countryId: $(this).val()
+				}
+			}).trigger('reloadGrid');
+		});
 
 		var path = '{{ path("supplier_productData") }}';
 		var grid = $('#gridTable');
@@ -39,13 +58,14 @@
 		   	rowNum: 5,
 		   	rowList: [5, 10, 20],
 		   	pager: '#pager',
-		   	// lastPage: 'lastPage',
 		   	jsonReader: {
 		   	    root: 'rows',
 		   	    page:  'page',
 		   	    total: 'total',
 		   	    records: 'records'
 		   	}
+		   	// lastPage: 'lastPage',
+		   	// 
 		   	// Set cell color/font
 		   	/*loadComplete: function() {
                 var columnNames = grid.jqGrid('getGridParam', 'colNames');
@@ -67,4 +87,4 @@
             // }
 
 		});
-	</script>
+</script>

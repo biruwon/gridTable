@@ -1,4 +1,4 @@
-<?
+<?php
 
 namespace Biruwon\SupplierBundle\Form;
 
@@ -18,7 +18,8 @@ class CountrySelect extends AbstractType
             'choices' => $valueIds,
             'expanded' => false,
             'multiple' => false,
-            'empty_value' => 'Global'
+            'empty_value' => 'Global',
+            'label' => false
             )
         );
     }
