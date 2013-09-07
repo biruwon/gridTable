@@ -4,6 +4,7 @@ namespace Biruwon\SupplierBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Doctrine\ORM\Query\Expr;
 use Biruwon\SupplierBundle\Entity\Product;
 use Biruwon\SupplierBundle\Form\CountrySelect;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -31,20 +32,41 @@ class DefaultController extends Controller
             //Check if params exists
             $rows = $request->get('rows');
             $page = $request->get('page');
-            $countryId = $request->get('countryId');
+
             $offset = ($rows*$page) - $rows;
 
             $em = $this->getDoctrine()->getManager();
 
-            $query = $em->createQuery(
-                'SELECT p.name, sum(o.amount) as totalUnits, sum(o.cost) as totalCost,
-                sum(o.amount*p.price) as totalRevenue
-                  FROM SupplierBundle:Product p
-                  LEFT JOIN SupplierBundle:OrderItem o
-                  WHERE p.id = o.product
-                  GROUP BY p.id
-                  '
-            );
+            $dqlQuery = 'SELECT p.name,
+                            sum(oi.amount) as totalUnits,
+                            sum(oi.cost) as totalCost,
+                            sum(oi.amount*p.price) as totalRevenue
+                        FROM SupplierBundle:OrderItem oi
+                            LEFT JOIN SupplierBundle:Product p
+                                WITH oi.product = p.id
+                        ';
+
+
+
+            if($request->query->has('countryId') && $request->get('countryId')){
+
+                $countryId = $request->get('countryId');
+                $dqlQuery .= ' JOIN SupplierBundle:Order o
+                                    WITH oi.order = o.id
+                                JOIN SupplierBundle:Store s
+                                    WITH o.store = s.id
+                                JOIN SupplierBundle:Country c
+                                    WITH s.country = :countryId';
+            }
+
+            $dqlQuery .= ' GROUP BY p.id';
+
+            $query = $em->createQuery($dqlQuery);
+
+            if (isset($countryId)) {
+
+                $query->setParameter('countryId', $countryId);
+            }
 
             $records = count($query->getScalarResult()); //Total rows
 
@@ -62,6 +84,7 @@ class DefaultController extends Controller
             // $productsToEncode['lastPage'] = $total;
 
             foreach($products as $key => $product){
+                // var_dump($product);
                 $child['id'] = $key;
                 $child['name'] = $product['name'];
                 $child['totalUnits'] = $product['totalUnits'];

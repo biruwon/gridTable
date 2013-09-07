@@ -46,6 +46,7 @@
 		grid.jqGrid({
 			url: path,
 			datatype: 'json',
+			height: 'auto',
 		   	colNames:['Index' ,'Product','Units Sold', 'Total Cost', 'Total Revenue','Total Profit'],
 		   	colModel:[
 		   		{name:'id', index:'id', width:60, sorttype:"int", hidden: true },

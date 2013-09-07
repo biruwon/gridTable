@@ -32,6 +32,8 @@ class LoadGridData extends AbstractFixture
             $this->addReference('country'.($key+1), $country);
         }
 
+        $manager->flush();
+
         //Create stores
         $storeIndex = 0;
         for($i=1; $i<=count($countries); $i++){
@@ -43,6 +45,8 @@ class LoadGridData extends AbstractFixture
                 $this->addReference('store'.$storeIndex, $store);
             }
         }
+
+        $manager->flush();
 
         //Create products
         for($i=1; $i<=1000; $i++){
