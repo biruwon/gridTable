@@ -69,7 +69,8 @@ class LoadGridData extends AbstractFixture
 
         //Create order
         foreach($orders as $order){
-            for($i=1; $i<=10; $i++){
+            $numOrders = rand(1, 10);
+            for($i=$numOrders; $i<=10; $i++){
 
                 $index = array_rand($products);
                 $product = $products[$index];
