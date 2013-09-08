@@ -19,6 +19,7 @@ class LoadGridData extends AbstractFixture
     public function load(ObjectManager $manager)
     {
         //Create countries
+        echo "Creating countries...\n";
         $countries = array(
             'Argentina', 'Australia', 'België', 'Brasil', 'Canada', 'Chile', 'Colombia',
             'Deutschland', 'España', 'France', 'India', 'Ireland', 'Italia','Nederland',
@@ -35,9 +36,10 @@ class LoadGridData extends AbstractFixture
         $manager->flush();
 
         //Create stores
+        echo "Creating stores...\n";
         $storeIndex = 0;
         for($i=1; $i<=count($countries); $i++){
-            for($j=1; $j<=10; $j++){
+            for($j=1; $j<=20; $j++){
 
                 $storeIndex++;
                 $store = new Store('Store'.$j, $this->getReference('country'.$i));
@@ -49,6 +51,7 @@ class LoadGridData extends AbstractFixture
         $manager->flush();
 
         //Create products
+        echo "Creating products...\n";
         for($i=1; $i<=1000; $i++){
 
             $product = new Product('Product'.$i, rand(1, 10));
@@ -56,7 +59,8 @@ class LoadGridData extends AbstractFixture
         }
 
         //Create orders
-        for($i=1; $i<=(count($countries)*10); $i++){
+        echo "Creating store orders...\n";
+        for($i=1; $i<=(count($countries)*20); $i++){
 
             for($j=1; $j<=10; $j++){
                 $order = new Order($this->getReference('store'.$i));
@@ -69,10 +73,11 @@ class LoadGridData extends AbstractFixture
         $orders = $manager->getRepository('SupplierBundle:Order')->findAll();
         $products = $manager->getRepository('SupplierBundle:Product')->findAll();
 
-        //Create order
+        //Create order item
+        echo "Creating orders items... (It takes a moment)\n";
         foreach($orders as $order){
             $numOrders = rand(1, 10);
-            for($i=$numOrders; $i<=10; $i++){
+            for($i=1; $i<=$numOrders; $i++){
 
                 $index = array_rand($products);
                 $product = $products[$index];
