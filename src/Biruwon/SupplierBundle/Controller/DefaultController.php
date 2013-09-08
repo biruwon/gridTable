@@ -44,16 +44,16 @@ class DefaultController extends Controller
                         FROM SupplierBundle:OrderItem oi
                             LEFT JOIN SupplierBundle:Product p
                                 WITH oi.product = p.id
+                            JOIN SupplierBundle:Order o
+                                WHERE oi.order = o.id
+                                AND o.createdAt = CURRENT_DATE()
                         ';
 
-
-
+            //Select country
             if($request->query->has('countryId') && $request->get('countryId')){
 
                 $countryId = $request->get('countryId');
-                $dqlQuery .= ' JOIN SupplierBundle:Order o
-                                    WITH oi.order = o.id
-                                JOIN SupplierBundle:Store s
+                $dqlQuery .= ' JOIN SupplierBundle:Store s
                                     WITH o.store = s.id
                                 JOIN SupplierBundle:Country c
                                     WITH s.country = :countryId';
@@ -70,6 +70,7 @@ class DefaultController extends Controller
 
             $records = count($query->getScalarResult()); //Total rows
 
+            //Pagination
             $query->setMaxResults($rows);
             $query->setFirstResult($offset);
 
@@ -84,7 +85,6 @@ class DefaultController extends Controller
             // $productsToEncode['lastPage'] = $total;
 
             foreach($products as $key => $product){
-                // var_dump($product);
                 $child['id'] = $key;
                 $child['name'] = $product['name'];
                 $child['totalUnits'] = $product['totalUnits'];

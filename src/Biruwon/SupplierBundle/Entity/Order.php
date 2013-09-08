@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  *
  * @ORM\Table(name="StoreOrder")
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
  */
 class Order
 {
@@ -35,6 +36,16 @@ class Order
      * @ORM\JoinColumn(name="items", referencedColumnName="id")
      */
     private $items;
+
+    /** @ORM\Column(name="created_at", type="date") */
+    private $createdAt;
+
+    /** @ORM\PrePersist */
+    public function createDateOrder()
+    {
+        $numDays = rand(-30, 30);
+        $this->createdAt = new \DateTime($numDays .' days');
+    }
 
     public function __construct(Store $store)
     {

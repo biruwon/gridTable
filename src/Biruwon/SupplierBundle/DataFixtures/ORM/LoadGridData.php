@@ -58,8 +58,10 @@ class LoadGridData extends AbstractFixture
         //Create orders
         for($i=1; $i<=(count($countries)*10); $i++){
 
-            $order = new Order($this->getReference('store'.$i));
-            $manager->persist($order);
+            for($j=1; $j<=10; $j++){
+                $order = new Order($this->getReference('store'.$i));
+                $manager->persist($order);
+            }
         }
 
         $manager->flush();
