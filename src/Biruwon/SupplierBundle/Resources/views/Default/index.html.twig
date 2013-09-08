@@ -1,11 +1,21 @@
 
 <div class="container">
 	<div class="content">
-		{{ form(form) }}
 
-		<table id="gridTable">
-			<div id="pager">
-		</table>
+		<div class="salesText">Global Sales</div>
+
+		<div id="datePicker"></div>
+
+		<div class="formSelect">
+			{{ form(form) }}
+		</div>
+
+		<div class="table">
+			<table id="gridTable">
+				<div id="pager">
+			</table>
+		</div>
+
 	</div>
 </div>
 
@@ -13,15 +23,48 @@
  	<link rel="stylesheet" href="{{ asset_url }}" />
 {% endstylesheets %}
 <style>
+
+    .content {
+    	margin: 0 auto;
+    	margin-top: 10%;
+    	width: 500px;
+    	position: absolute;
+    	display: block;
+    }
+
 	.container {
 		height: 100%;
 		width: 100%;
 	}
 
-	.content {
-		margin: 0 auto;
-		margin-top: 10%;
-		width: 500px;
+	.salesText {
+		display: block;
+	    margin-left: 631px;
+	    margin-top: -15px;
+	    position: absolute;
+	    width: 100%;
+	}
+
+    #datepicker {
+    	font-size: 62.5%;
+    	display: block;
+    	position: absolute;
+    	margin-left: 245px;
+    	margin-top:	41px;
+    }
+
+    .formSelect {
+    	display: block;
+    	position: absolute;
+    	margin-left: 450px;
+    	margin-top: 10px;
+    }
+
+	.table {
+		display: block;
+		position: absolute;
+		margin-left: 450px;
+		margin-top: 41px;
 	}
 </style>
 
@@ -40,6 +83,8 @@
 				}
 			}).trigger('reloadGrid');
 		});
+
+		$('#datePicker').datepicker();
 
 		var path = '{{ path("supplier_productData") }}';
 		var grid = $('#gridTable');
