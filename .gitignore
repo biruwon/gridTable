@@ -8,4 +8,5 @@
 /build/
 /vendor/
 /bin/
+!/bin/deploy.sh
 /composer.phar
