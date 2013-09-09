@@ -4,7 +4,10 @@
 
 		<div class="salesText">Global Sales</div>
 
-		<div id="datePicker"></div>
+		<div id="datePicker" class="dates">
+			<div></div>
+			<button id="reload">Reload</button>
+		</div>
 
 		<div class="formSelect">
 			{{ form(form) }}
@@ -66,6 +69,12 @@
 		margin-left: 450px;
 		margin-top: 41px;
 	}
+
+	.date-range-selected > .ui-state-active,
+	.date-range-selected > .ui-state-default {
+	   background: none;
+	   background-color: #85B5D9;
+	}
 </style>
 
 {% javascripts
@@ -76,15 +85,7 @@
 
 <script type="text/javascript">
 
-		$('#country_countries').on('change', function() {
-			grid.setGridParam({
-				postData: {
-					countryId: $(this).val()
-				}
-			}).trigger('reloadGrid');
-		});
-
-		$('#datePicker').datepicker();
+	$(function() {
 
 		var path = '{{ path("supplier_productData") }}';
 		var grid = $('#gridTable');
@@ -133,4 +134,48 @@
             // }
 
 		});
+
+		/* See [[ http://www.benknowscode.com/2012/11/selecting-ranges-jquery-ui-datepicker.html ]] for more information 
+		*/
+		var cur = -1, prv = -1;
+		$('#datePicker')
+		    .datepicker({
+
+		        beforeShowDay: function ( date ) {
+		            return [true, ( (date.getTime() >= Math.min(prv, cur) && date.getTime() <= Math.max(prv, cur)) ? 'date-range-selected' : '')];
+		            },
+
+		        onSelect: function ( dateText, inst ) {
+		            var d1, d2;
+
+		            prv = cur;
+		            cur = (new Date(inst.selectedYear, inst.selectedMonth, inst.selectedDay)).getTime();
+		            if ( prv == -1 || prv == cur ) {
+		                prv = cur;
+		            }
+		        },
+		    });
+
+		$('#country_countries').on('change', function() {
+			grid.setGridParam({
+				postData: {
+					countryId: $(this).val()
+				}
+			}).trigger('reloadGrid');
+		});
+
+		$('#reload').on('click', function() {
+
+			var actualDate = '';
+
+			if(cur === -1){
+				actualDate = $.datepicker.formatDate('yy/mm/dd', new Date());
+			} else if (cur === prv){
+				actualDate = $.datepicker.formatDate('yy/mm/dd', new Date(cur));
+			} else {
+				var from = $.datepicker.formatDate('yy/mm/dd', new Date(prv));
+				var to = $.datepicker.formatDate('yy/mm/dd', new Date(cur));
+			}
+		});
+	});
 </script>
