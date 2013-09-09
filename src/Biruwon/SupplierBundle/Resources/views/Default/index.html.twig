@@ -141,6 +141,9 @@
 		$('#datePicker')
 		    .datepicker({
 
+		    	minDate: new Date('{{ dates.minDate }}'),
+		    	maxDate: new Date('{{ dates.maxDate }}'),
+
 		        beforeShowDay: function ( date ) {
 		            return [true, ( (date.getTime() >= Math.min(prv, cur) && date.getTime() <= Math.max(prv, cur)) ? 'date-range-selected' : '')];
 		            },
@@ -169,12 +172,38 @@
 			var actualDate = '';
 
 			if(cur === -1){
+
 				actualDate = $.datepicker.formatDate('yy/mm/dd', new Date());
+				grid.setGridParam({
+					postData: {
+						date: actualDate,
+						from: null,
+						to: null
+					}
+				}).trigger('reloadGrid');
+
 			} else if (cur === prv){
+
 				actualDate = $.datepicker.formatDate('yy/mm/dd', new Date(cur));
+				grid.setGridParam({
+					postData: {
+						date: actualDate,
+						from: null,
+						to: null
+					}
+				}).trigger('reloadGrid');
+
 			} else {
-				var from = $.datepicker.formatDate('yy/mm/dd', new Date(prv));
-				var to = $.datepicker.formatDate('yy/mm/dd', new Date(cur));
+
+				var dateFrom = $.datepicker.formatDate('yy/mm/dd', new Date(prv));
+				var dateTo = $.datepicker.formatDate('yy/mm/dd', new Date(cur));
+				grid.setGridParam({
+					postData: {
+						date: null,
+						from: dateFrom,
+						to: dateTo
+					}
+				}).trigger('reloadGrid');
 			}
 		});
 	});

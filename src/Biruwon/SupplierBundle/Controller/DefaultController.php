@@ -20,8 +20,15 @@ class DefaultController extends Controller
 
         $form = $this->createForm(new CountrySelect(), $countries);
 
+        $dates = $em->createQuery(' SELECT
+                                        MAX(o.createdAt) as maxDate,
+                                        MIN(o.createdAt) as minDate
+                                    FROM SupplierBundle:Order o'
+            )->getSingleResult();
+
         return $this->render('SupplierBundle:Default:index.html.twig', array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'dates' => $dates
         ));
     }
 
@@ -46,8 +53,21 @@ class DefaultController extends Controller
                                 WITH oi.product = p.id
                             JOIN SupplierBundle:Order o
                                 WHERE oi.order = o.id
-                                AND o.createdAt = CURRENT_DATE()
                         ';
+
+            //Select date
+            if($request->query->has('date') && $request->get('date')){
+                $date = $request->get('date');
+                $dqlQuery .= ' AND o.createdAt = :date';
+            } elseif($request->query->has('from') && $request->get('from')
+                && $request->query->has('to') && $request->get('to'))
+            {
+                $from = $request->get('from');
+                $to = $request->get('to');
+                $dqlQuery .= ' AND o.createdAt BETWEEN :from AND :to';
+            } else {
+                $dqlQuery .= ' AND o.createdAt = CURRENT_DATE()';
+            }
 
             //Select country
             if($request->query->has('countryId') && $request->get('countryId')){
@@ -66,6 +86,17 @@ class DefaultController extends Controller
             if (isset($countryId)) {
 
                 $query->setParameter('countryId', $countryId);
+            }
+
+            if (isset($date)) {
+
+                $query->setParameter('date', $date);
+            }
+
+            if (isset($from) && isset($to) ) {
+
+                $query->setParameter('from', $from);
+                $query->setParameter('to', $to);
             }
 
             $records = count($query->getScalarResult()); //Total rows
