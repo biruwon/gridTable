@@ -96,12 +96,15 @@
 		   	colNames:['Index' ,'Product','Units Sold', 'Total Cost', 'Total Revenue','Total Profit'],
 		   	colModel:[
 		   		{name:'id', index:'id', width:60, sorttype:"int", hidden: true },
-		   		{name:'name', index:'name', width:100, align:'center'},
+		   		{name:'name', index:'name', width:100, align:'center', sorttype:'text'},
 		   		{name:'totalUnits', index:'units', width:100, align:'center', sorttype:'int'},
-		   		{name:'totalCost',index:'cost', width:100, align:'center ',sorttype:'float'},
-		   		{name:'totalRevenue',index:'revenue', width:120, align:'center',sorttype:'float'},
-		   		{name:'profit',index:'profit', width:100,align:"center",sorttype:'float'}
+		   		{name:'totalCost',index:'cost', width:100, align:'center ',sorttype:'int'},
+		   		{name:'totalRevenue',index:'revenue', width:120, align:'center',sorttype:'int'},
+		   		{name:'profit',index:'profit', width:100,align:"center",sorttype:'int'}
 		   	],
+		   	autowidth:true,
+		   	shrinkToFit:false,
+		   	sortable:true,
 		   	rowNum: 5,
 		   	rowList: [5, 10, 20],
 		   	pager: '#pager',
