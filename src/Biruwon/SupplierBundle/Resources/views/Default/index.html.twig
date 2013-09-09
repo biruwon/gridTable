@@ -56,6 +56,13 @@
     	margin-top:	41px;
     }
 
+    #reload {
+    	display: block;
+    	position: absolute;
+    	margin-top: 165px;
+    	margin-left: 60px;
+    }
+
     .formSelect {
     	display: block;
     	position: absolute;
@@ -102,8 +109,8 @@
 		   		{name:'totalRevenue',index:'revenue', width:120, align:'center',sorttype:'int'},
 		   		{name:'profit',index:'profit', width:100,align:"center",sorttype:'int'}
 		   	],
-		   	autowidth:true,
-		   	shrinkToFit:false,
+		   	autowidth:false,
+		   	shrinkToFit:true,
 		   	sortable:true,
 		   	rowNum: 5,
 		   	rowList: [5, 10, 20],
@@ -115,7 +122,7 @@
 		   	    records: 'records'
 		   	}
 		   	// lastPage: 'lastPage',
-		   	// 
+		   	//
 		   	// Set cell color/font
 		   	/*loadComplete: function() {
                 var columnNames = grid.jqGrid('getGridParam', 'colNames');
@@ -197,6 +204,13 @@
 				}).trigger('reloadGrid');
 
 			} else {
+
+				//Fixed selected toDate less than fromDate
+				if ( cur < prv) {
+					var aux = cur;
+					cur = prv;
+					prv = aux;
+				}
 
 				var dateFrom = $.datepicker.formatDate('yy/mm/dd', new Date(prv));
 				var dateTo = $.datepicker.formatDate('yy/mm/dd', new Date(cur));
