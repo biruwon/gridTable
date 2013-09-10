@@ -47,7 +47,8 @@ class DefaultController extends Controller
             $dqlQuery = 'SELECT p.name,
                             sum(oi.amount) as totalUnits,
                             sum(oi.cost) as totalCost,
-                            sum(oi.amount*p.price) as totalRevenue
+                            sum(oi.amount*p.price) as totalRevenue,
+                            (sum(oi.cost) - sum(oi.amount*p.price)) as profit
                         FROM SupplierBundle:OrderItem oi
                             LEFT JOIN SupplierBundle:Product p
                                 WITH oi.product = p.id
@@ -80,6 +81,15 @@ class DefaultController extends Controller
             }
 
             $dqlQuery .= ' GROUP BY p.id';
+
+            //Click order column
+            if($request->query->has('sidx') && $request->get('sidx')
+                && $request->query->has('sord') && $request->get('sord'))
+            {
+                $sortColumn = $request->get('sidx');
+                $sort = $request->get('sord');
+                $dqlQuery .= ' ORDER BY '.$sortColumn.' '.$sort;
+            }
 
             $query = $em->createQuery($dqlQuery);
 
@@ -117,11 +127,11 @@ class DefaultController extends Controller
 
             foreach($products as $key => $product){
                 $child['id'] = $key;
-                $child['name'] = $product['name'];
+                $child['p.name'] = $product['name'];
                 $child['totalUnits'] = $product['totalUnits'];
                 $child['totalCost'] = $product['totalCost'];
                 $child['totalRevenue'] = $product['totalRevenue'];
-                $child['profit'] = $product['totalRevenue'] - $product['totalCost'];
+                $child['profit'] = $product['profit'];
 
                 array_push($productsToEncode['rows'], $child);
             }
