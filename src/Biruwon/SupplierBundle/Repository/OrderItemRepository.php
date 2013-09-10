@@ -12,4 +12,75 @@ use Doctrine\ORM\EntityRepository;
  */
 class OrderItemRepository extends EntityRepository
 {
+	public function getQueryGrid($parameters)
+	{
+		$queryParams = array();
+		$validParams = array();
+
+		//Clean empty params
+		foreach($parameters as $key => $value) {
+
+			if(!empty($value)) {
+				$validParams[$key] = $value;
+			}
+		}
+
+		//Main dql
+		$dqlQuery = 'SELECT p.name,
+		                sum(oi.amount) as totalUnits,
+		                sum(oi.cost) as totalCost,
+		                sum(oi.amount*p.price) as totalRevenue,
+		                (sum(oi.cost) - sum(oi.amount*p.price)) as profit
+		            FROM SupplierBundle:OrderItem oi
+		                LEFT JOIN SupplierBundle:Product p
+		                    WITH oi.product = p.id
+		                JOIN SupplierBundle:Order o
+		                    WHERE oi.order = o.id
+		            ';
+
+		//Select date
+		if(isset($validParams['date'])){
+
+		    // $date = $request->get('date');
+		    $dqlQuery .= ' AND o.createdAt = :date';
+		    $queryParams['date'] = $validParams['date'];
+
+		} elseif(isset($validParams['from']) &&  isset($validParams['to'])){
+		    // $from = $request->get('from');
+		    // $to = $request->get('to');
+		    $dqlQuery .= ' AND o.createdAt BETWEEN :from AND :to';
+		    $queryParams['from'] = $validParams['from'];
+		    $queryParams['to'] = $validParams['to'];
+
+		} else {
+
+		    $dqlQuery .= ' AND o.createdAt = CURRENT_DATE()';
+		}
+
+		//Select country
+		if(isset($validParams['countryId'])){
+
+		    // $countryId = $request->get('countryId');
+		    $dqlQuery .= ' JOIN SupplierBundle:Store s
+		                        WITH o.store = s.id
+		                    JOIN SupplierBundle:Country c
+		                        WITH s.country = :countryId';
+		    $queryParams['countryId'] = $validParams['countryId'];
+		}
+
+		$dqlQuery .= ' GROUP BY p.id';
+
+		//Click order column
+		if(isset($validParams['sidx']) &&  isset($validParams['sord'])){
+
+		    $sortColumn = $validParams['sidx'];
+		    $sort = $validParams['sord'];
+		    $dqlQuery .= ' ORDER BY '.$sortColumn.' '.$sort;
+		}
+
+		$query = $this->getEntityManager()->createQuery($dqlQuery);
+		$query->setParameters($queryParams);
+
+		return $query;
+	}
 }

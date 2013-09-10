@@ -82,11 +82,12 @@ class LoadGridData extends AbstractFixture
                 $index = array_rand($products);
                 $product = $products[$index];
 
-                $amount = rand(1, 100);
+                $amount = rand(50, 500);
 
                 $revenue = $amount * $products[$index]->getPrice();
-                $percentage = $revenue*0.1;
-                $cost = $revenue + rand(-$percentage, $percentage);
+                $percentageMax = $revenue*0.1;
+                $percentageMin = $revenue*0.05;
+                $cost = $revenue + rand(-$percentageMin, $percentageMax);
 
                 $orderItem = new OrderItem($product, $order, $cost, $amount);
 

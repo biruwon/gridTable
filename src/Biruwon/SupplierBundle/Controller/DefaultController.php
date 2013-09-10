@@ -34,70 +34,9 @@ class DefaultController extends Controller
 
             $em = $this->getDoctrine()->getManager();
 
-            $dqlQuery = 'SELECT p.name,
-                            sum(oi.amount) as totalUnits,
-                            sum(oi.cost) as totalCost,
-                            sum(oi.amount*p.price) as totalRevenue,
-                            (sum(oi.cost) - sum(oi.amount*p.price)) as profit
-                        FROM SupplierBundle:OrderItem oi
-                            LEFT JOIN SupplierBundle:Product p
-                                WITH oi.product = p.id
-                            JOIN SupplierBundle:Order o
-                                WHERE oi.order = o.id
-                        ';
+            $parameters = $request->query->all();
 
-            //Select date
-            if($request->query->has('date') && $request->get('date')){
-                $date = $request->get('date');
-                $dqlQuery .= ' AND o.createdAt = :date';
-            } elseif($request->query->has('from') && $request->get('from')
-                && $request->query->has('to') && $request->get('to'))
-            {
-                $from = $request->get('from');
-                $to = $request->get('to');
-                $dqlQuery .= ' AND o.createdAt BETWEEN :from AND :to';
-            } else {
-                $dqlQuery .= ' AND o.createdAt = CURRENT_DATE()';
-            }
-
-            //Select country
-            if($request->query->has('countryId') && $request->get('countryId')){
-
-                $countryId = $request->get('countryId');
-                $dqlQuery .= ' JOIN SupplierBundle:Store s
-                                    WITH o.store = s.id
-                                JOIN SupplierBundle:Country c
-                                    WITH s.country = :countryId';
-            }
-
-            $dqlQuery .= ' GROUP BY p.id';
-
-            //Click order column
-            if($request->query->has('sidx') && $request->get('sidx')
-                && $request->query->has('sord') && $request->get('sord'))
-            {
-                $sortColumn = $request->get('sidx');
-                $sort = $request->get('sord');
-                $dqlQuery .= ' ORDER BY '.$sortColumn.' '.$sort;
-            }
-
-            $query = $em->createQuery($dqlQuery);
-
-            if (isset($countryId)) {
-
-                $query->setParameter('countryId', $countryId);
-            }
-
-            if (isset($date)) {
-
-                $query->setParameter('date', $date);
-            }
-
-            if (isset($from) && isset($to) ) {
-
-                $query->setParameter('from', $from);
-                $query->setParameter('to', $to);
-            }
+            $query = $em->getRepository('SupplierBundle:OrderItem')->getQueryGrid($parameters);
 
             //Check if params exists
             $rows = $request->get('rows');
@@ -113,7 +52,7 @@ class DefaultController extends Controller
 
             $products = $query->getResult();
 
-            $total = ceil($records/$rows); //Change page and check errors
+            $total = ceil($records/$rows);
 
             $productsToEncode['rows'] = array();
             $productsToEncode['page'] = $page;
