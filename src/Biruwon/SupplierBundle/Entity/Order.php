@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Order
  *
  * @ORM\Table(name="StoreOrder")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Biruwon\SupplierBundle\Repository\OrderRepository")
  * @ORM\HasLifecycleCallbacks
  */
 class Order

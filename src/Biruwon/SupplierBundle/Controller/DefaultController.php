@@ -20,11 +20,7 @@ class DefaultController extends Controller
 
         $form = $this->createForm(new CountrySelect(), $countries);
 
-        $dates = $em->createQuery(' SELECT
-                                        MAX(o.createdAt) as maxDate,
-                                        MIN(o.createdAt) as minDate
-                                    FROM SupplierBundle:Order o'
-            )->getSingleResult();
+        $dates = $em->getRepository('SupplierBundle:Order')->getMAXandMIXDates();
 
         return $this->render('SupplierBundle:Default:index.html.twig', array(
             'form' => $form->createView(),
@@ -35,12 +31,6 @@ class DefaultController extends Controller
     public function productDataAction(Request $request)
     {
         if($request->isXmlHttpRequest()){
-
-            //Check if params exists
-            $rows = $request->get('rows');
-            $page = $request->get('page');
-
-            $offset = ($rows*$page) - $rows;
 
             $em = $this->getDoctrine()->getManager();
 
@@ -108,6 +98,12 @@ class DefaultController extends Controller
                 $query->setParameter('from', $from);
                 $query->setParameter('to', $to);
             }
+
+            //Check if params exists
+            $rows = $request->get('rows');
+            $page = $request->get('page');
+
+            $offset = ($rows*$page) - $rows;
 
             $records = count($query->getScalarResult()); //Total rows
 
