@@ -84,6 +84,8 @@
 	   background: none;
 	   background-color: #85B5D9;
 	}
+
+	.altRowClass { background: #DDDDDC; }
 </style>
 
 {% javascripts
@@ -111,6 +113,8 @@
 		   		{name:'totalRevenue',index:'totalRevenue', width:120, align:'center',sorttype:'int'},
 		   		{name:'profit',index:'profit', width:100,align:"center",sorttype:'int'}
 		   	],
+		   	altRows:true,
+		   	altclass:'altRowClass',
 		   	autowidth:false,
 		   	shrinkToFit:true,
 		   	rowNum: 5,
