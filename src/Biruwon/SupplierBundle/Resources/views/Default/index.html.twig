@@ -111,7 +111,15 @@
 		   		{name:'totalUnits', index:'totalUnits', width:100, align:'center', sorttype:'int'},
 		   		{name:'totalCost',index:'totalCost', width:100, align:'center ',sorttype:'int'},
 		   		{name:'totalRevenue',index:'totalRevenue', width:120, align:'center',sorttype:'int'},
-		   		{name:'profit',index:'profit', width:100,align:"center",sorttype:'int'}
+		   		{name:'profit',index:'profit', width:100,align:"center",sorttype:'int', cellattr: function (rowid, cellvalue) {
+                            var cellStyle = ' style="color:blue;"';
+                            if(cellvalue > 0) {
+                            	cellStyle = ' style="color:green;font-weight:bold;"';
+                            } else if(cellvalue < 0) {
+                            	cellStyle = ' style="color:red;"';
+                            }
+                            return cellStyle;
+                        }}
 		   	],
 		   	altRows:true,
 		   	altclass:'altRowClass',
