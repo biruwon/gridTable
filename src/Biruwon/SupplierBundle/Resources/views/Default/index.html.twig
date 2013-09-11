@@ -86,6 +86,15 @@
 	}
 
 	.altRowClass { background: #DDDDDC; }
+
+/*	.ui-search-toolbar {
+		display: block;
+	    margin-left: 450px;
+	    margin-top: 205px;
+	    position: absolute;
+	    width: 100%;
+	}*/
+
 </style>
 
 {% javascripts
@@ -106,12 +115,13 @@
 			height: 'auto',
 		   	colNames:['Index' ,'Product','Units Sold', 'Total Cost', 'Total Revenue','Total Profit'],
 		   	colModel:[
-		   		{name:'id', index:'id', width:60, sorttype:"int", hidden: true },
+		   		{name:'id', index:'id', width:60, sorttype:"int", hidden: true, search:false },
 		   		{name:'p.name', index:'p.name', width:100, align:'center', sorttype:'text'},
-		   		{name:'totalUnits', index:'totalUnits', width:100, align:'center', sorttype:'int'},
-		   		{name:'totalCost',index:'totalCost', width:100, align:'center ',sorttype:'int'},
-		   		{name:'totalRevenue',index:'totalRevenue', width:120, align:'center',sorttype:'int'},
-		   		{name:'profit',index:'profit', width:100,align:"center",sorttype:'int', cellattr: function (rowid, cellvalue) {
+		   		{name:'totalUnits', index:'totalUnits', width:100, align:'center', sorttype:'int', search:false},
+		   		{name:'totalCost',index:'totalCost', width:100, align:'center ',sorttype:'int', search:false},
+		   		{name:'totalRevenue',index:'totalRevenue', width:120, align:'center',sorttype:'int', search:false},
+		   		{name:'profit',index:'profit', width:100,align:"center",sorttype:'int', search:false,
+		   			cellattr: function (rowid, cellvalue) {
                             var cellStyle = ' style="color:blue;"';
                             if(cellvalue > 0) {
                             	cellStyle = ' style="color:green;font-weight:bold;"';
@@ -142,6 +152,8 @@
             // }
 
 		});
+		grid.jqGrid('filterToolbar');
+		// $('.ui-search-toolbar').insertAfter('.table')
 
 		/* See [[ http://www.benknowscode.com/2012/11/selecting-ranges-jquery-ui-datepicker.html ]] for more information 
 		*/

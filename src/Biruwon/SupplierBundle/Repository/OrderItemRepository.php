@@ -41,13 +41,11 @@ class OrderItemRepository extends EntityRepository
 		//Select date
 		if(isset($validParams['date'])){
 
-		    // $date = $request->get('date');
 		    $dqlQuery .= ' AND o.createdAt = :date';
 		    $queryParams['date'] = $validParams['date'];
 
 		} elseif(isset($validParams['from']) &&  isset($validParams['to'])){
-		    // $from = $request->get('from');
-		    // $to = $request->get('to');
+
 		    $dqlQuery .= ' AND o.createdAt BETWEEN :from AND :to';
 		    $queryParams['from'] = $validParams['from'];
 		    $queryParams['to'] = $validParams['to'];
@@ -60,12 +58,19 @@ class OrderItemRepository extends EntityRepository
 		//Select country
 		if(isset($validParams['countryId'])){
 
-		    // $countryId = $request->get('countryId');
 		    $dqlQuery .= ' JOIN SupplierBundle:Store s
 		                        WITH o.store = s.id
 		                    JOIN SupplierBundle:Country c
 		                        WITH s.country = :countryId';
 		    $queryParams['countryId'] = $validParams['countryId'];
+		}
+
+		//Filter name
+		if(isset($validParams['p_name'])){
+
+		    $dqlQuery .= " WHERE p.name LIKE :p_name";
+		    $likeParam = $validParams['p_name'];
+
 		}
 
 		$dqlQuery .= ' GROUP BY p.id';
@@ -80,6 +85,10 @@ class OrderItemRepository extends EntityRepository
 
 		$query = $this->getEntityManager()->createQuery($dqlQuery);
 		$query->setParameters($queryParams);
+
+		if(isset($likeParam)){
+			$query->setParameter('p_name', '%'.$likeParam.'%');
+		}
 
 		return $query;
 	}
