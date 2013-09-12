@@ -1,0 +1,46 @@
+
+.content, .salesText, #datepicker, #reload, .formSelect, .table {
+	display:block;
+	position: absolute;
+}
+
+.content {
+	margin: 0 auto;
+	margin-top: 10%;
+	width: 500px;
+}
+
+.container {
+	height: 100%;
+	width: 100%;
+}
+
+.salesText {
+    margin-left: 500px;
+    margin-top: -15px;
+    width: 100%;
+    text-align: center;
+}
+
+#datepicker {
+	font-size: 62.5%;
+	margin-left: 245px;
+	margin-top:	41px;
+}
+
+#reload {
+	margin-top: 165px;
+	margin-left: 60px;
+}
+
+.formSelect {
+	margin-left: 450px;
+	margin-top: 10px;
+}
+
+.table {
+	margin-left: 450px;
+	margin-top: 41px;
+}
+
+.altRowClass { background: #DDDDDC; }

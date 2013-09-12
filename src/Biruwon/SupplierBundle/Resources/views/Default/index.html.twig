@@ -1,14 +1,29 @@
+{% extends '::base.html.twig' %}
 
+{% block stylesheets %}
+	{% stylesheets 'bundles/supplier/css/*' filter='cssrewrite' %}
+	 	<link rel="stylesheet" href="{{ asset_url }}" />
+	{% endstylesheets %}
+	<style>
+		.date-range-selected > .ui-state-active,
+		.date-range-selected > .ui-state-default {
+		   background: none;
+		   background-color: #85B5D9;
+		}
+	</style>
+{% endblock %}
+
+{% block body %}
 <div class="container">
 	<div class="content">
 
 		<div class="salesText">
-			Global Sales - <span id="dateGlobal"> {{ 'now'|date('F d')}} </span> - {{ 'now'|date('Y') }}
+			<em>Global Sales - <span id="dateGlobal"> {{ 'now'|date('F d')}} </span> - {{ 'now'|date('Y') }}</em>
 		</div>
 
 		<div id="datePicker" class="dates">
 			<div></div>
-			<button id="reload">Reload</button>
+			<button type="button" id="reload">Reload</button>
 		</div>
 
 		<div class="formSelect">
@@ -17,221 +32,21 @@
 
 		<div class="table">
 			<table id="gridTable">
-				<div id="pager">
+				<div id="pager"></div>
 			</table>
 		</div>
 
 	</div>
 </div>
+{% endblock %}
 
-{% stylesheets 'bundles/supplier/css/*' filter='cssrewrite' %}
- 	<link rel="stylesheet" href="{{ asset_url }}" />
-{% endstylesheets %}
-<style>
-
-    .content {
-    	margin: 0 auto;
-    	margin-top: 10%;
-    	width: 500px;
-    	position: absolute;
-    	display: block;
-    }
-
-	.container {
-		height: 100%;
-		width: 100%;
-	}
-
-	.salesText {
-		display: block;
-	    margin-left: 631px;
-	    margin-top: -15px;
-	    position: absolute;
-	    width: 100%;
-	}
-
-    #datepicker {
-    	font-size: 62.5%;
-    	display: block;
-    	position: absolute;
-    	margin-left: 245px;
-    	margin-top:	41px;
-    }
-
-    #reload {
-    	display: block;
-    	position: absolute;
-    	margin-top: 165px;
-    	margin-left: 60px;
-    }
-
-    .formSelect {
-    	display: block;
-    	position: absolute;
-    	margin-left: 450px;
-    	margin-top: 10px;
-    }
-
-	.table {
-		display: block;
-		position: absolute;
-		margin-left: 450px;
-		margin-top: 41px;
-	}
-
-	.date-range-selected > .ui-state-active,
-	.date-range-selected > .ui-state-default {
-	   background: none;
-	   background-color: #85B5D9;
-	}
-
-	.altRowClass { background: #DDDDDC; }
-
-/*	.ui-search-toolbar {
-		display: block;
-	    margin-left: 450px;
-	    margin-top: 205px;
-	    position: absolute;
-	    width: 100%;
-	}*/
-
-</style>
-
-{% javascripts
-	'@SupplierBundle/Resources/public/js/jquery-1.9.0.min.js'
-	'@SupplierBundle/Resources/public/js/*' %}
-	<script src="{{ asset_url }}"></script>
-{% endjavascripts %}
-
-<script type="text/javascript">
-
-	$(function() {
-
+{% block javascripts %}
+	<script type="text/javascript">
 		var path = '{{ path("supplier_productData") }}';
-		var grid = $('#gridTable');
-		grid.jqGrid({
-			url: path,
-			datatype: 'json',
-			height: 'auto',
-		   	colNames:['Index' ,'Product','Units Sold', 'Total Cost', 'Total Revenue','Total Profit'],
-		   	colModel:[
-		   		{name:'id', index:'id', width:60, sorttype:"int", hidden: true, search:false },
-		   		{name:'p.name', index:'p.name', width:100, align:'center', sorttype:'text'},
-		   		{name:'totalUnits', index:'totalUnits', width:100, align:'center', sorttype:'int', search:false},
-		   		{name:'totalCost',index:'totalCost', width:100, align:'center ',sorttype:'int', search:false},
-		   		{name:'totalRevenue',index:'totalRevenue', width:120, align:'center',sorttype:'int', search:false},
-		   		{name:'profit',index:'profit', width:100,align:"center",sorttype:'int', search:false,
-		   			cellattr: function (rowid, cellvalue) {
-                            var cellStyle = ' style="color:blue;"';
-                            if(cellvalue > 0) {
-                            	cellStyle = ' style="color:green;font-weight:bold;"';
-                            } else if(cellvalue < 0) {
-                            	cellStyle = ' style="color:red;"';
-                            }
-                            return cellStyle;
-                        }}
-		   	],
-		   	altRows:true,
-		   	altclass:'altRowClass',
-		   	autowidth:false,
-		   	shrinkToFit:true,
-		   	rowNum: 5,
-		   	rowList: [5, 10, 20],
-		   	pager: '#pager',
-		   	jsonReader: {
-		   	    root: 'rows',
-		   	    page:  'page',
-		   	    total: 'total',
-		   	    records: 'records'
-		   	}
-		   	// lastPage: 'lastPage',
-		   	// 
-            // Label page size
-            // loadComplete: function () {
-            // 	$('.ui-pg-selbox').closest("td").before("<td dir='ltr'>Page size</td>");
-            // }
-
-		});
-		grid.jqGrid('filterToolbar');
-		// $('.ui-search-toolbar').insertAfter('.table')
-
-		/* See [[ http://www.benknowscode.com/2012/11/selecting-ranges-jquery-ui-datepicker.html ]] for more information 
-		*/
-		var cur = -1, prv = -1;
-		$('#datePicker')
-		    .datepicker({
-
-		    	minDate: new Date('{{ dates.minDate }}'),
-		    	maxDate: new Date('{{ dates.maxDate }}'),
-
-		        beforeShowDay: function ( date ) {
-		            return [true, ( (date.getTime() >= Math.min(prv, cur) && date.getTime() <= Math.max(prv, cur)) ? 'date-range-selected' : '')];
-		            },
-
-		        onSelect: function ( dateText, inst ) {
-		            var d1, d2;
-
-		            prv = cur;
-		            cur = (new Date(inst.selectedYear, inst.selectedMonth, inst.selectedDay)).getTime();
-		            if ( prv == -1 || prv == cur ) {
-		                prv = cur;
-		            }
-		        },
-		    });
-
-		$('#country_countries').on('change', function() {
-			grid.setGridParam({
-				postData: {
-					countryId: $(this).val()
-				}
-			}).trigger('reloadGrid');
-		});
-
-		$('#reload').on('click', function() {
-
-			var actualDate = '';
-
-			if(cur === -1){
-
-				actualDate = $.datepicker.formatDate('yy/mm/dd', new Date());
-				grid.setGridParam({
-					postData: {
-						date: actualDate,
-						from: null,
-						to: null
-					}
-				}).trigger('reloadGrid');
-
-			} else if (cur === prv){
-
-				actualDate = $.datepicker.formatDate('yy/mm/dd', new Date(cur));
-				grid.setGridParam({
-					postData: {
-						date: actualDate,
-						from: null,
-						to: null
-					}
-				}).trigger('reloadGrid');
-
-			} else {
-
-				//Fixed selected toDate less than fromDate
-				if ( cur < prv) {
-					var aux = cur;
-					cur = prv;
-					prv = aux;
-				}
-
-				var dateFrom = $.datepicker.formatDate('yy/mm/dd', new Date(prv));
-				var dateTo = $.datepicker.formatDate('yy/mm/dd', new Date(cur));
-				grid.setGridParam({
-					postData: {
-						date: null,
-						from: dateFrom,
-						to: dateTo
-					}
-				}).trigger('reloadGrid');
-			}
-		});
-	});
-</script>
+	</script>
+	{% javascripts
+		'@SupplierBundle/Resources/public/js/jquery-1.9.0.min.js'
+		'@SupplierBundle/Resources/public/js/*' %}
+		<script src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+{% endblock %}

@@ -36,9 +36,10 @@ class DefaultController extends Controller
 
             $parameters = $request->query->all();
 
-            $query = $em->getRepository('SupplierBundle:OrderItem')->getQueryGrid($parameters);
+            $query = $em->getRepository('SupplierBundle:OrderItem')
+                        ->getQueryGrid($parameters);
 
-            //Check if params exists
+            //--Pagination
             $rows = $request->get('rows');
             $page = $request->get('page');
 
@@ -46,9 +47,9 @@ class DefaultController extends Controller
 
             $records = count($query->getScalarResult()); //Total rows
 
-            //Pagination
             $query->setMaxResults($rows);
             $query->setFirstResult($offset);
+            //--End Pagination
 
             $products = $query->getResult();
 
@@ -58,7 +59,6 @@ class DefaultController extends Controller
             $productsToEncode['page'] = $page;
             $productsToEncode['total'] = $total;
             $productsToEncode['records'] = $records;
-            // $productsToEncode['lastPage'] = $total;
 
             foreach($products as $key => $product){
                 $child['id'] = $key;

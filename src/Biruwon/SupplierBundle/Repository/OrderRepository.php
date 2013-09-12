@@ -12,7 +12,6 @@ use Doctrine\ORM\EntityRepository;
  */
 class OrderRepository extends EntityRepository
 {
-
 	public function getMAXandMIXDates()
 	{
 		$query = $this->getEntityManager()->createQuery(
