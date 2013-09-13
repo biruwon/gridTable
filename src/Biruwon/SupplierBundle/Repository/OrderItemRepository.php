@@ -63,6 +63,12 @@ class OrderItemRepository extends EntityRepository
 		                    JOIN SupplierBundle:Country c
 		                        WITH s.country = :countryId';
 		    $queryParams['countryId'] = $validParams['countryId'];
+		} else {
+			$dqlQuery .= ' JOIN SupplierBundle:Store s
+		                        WITH o.store = s.id
+		                    JOIN SupplierBundle:Country c
+		                    	WHERE c.id IS NOT NULL'
+		                    ;
 		}
 
 		//Filter name
