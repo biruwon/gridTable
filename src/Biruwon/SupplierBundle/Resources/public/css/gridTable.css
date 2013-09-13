@@ -1,5 +1,5 @@
 
-.content, .salesText, #datepicker, #reload, .formSelect, .table {
+.content, .salesText, #datePicker, #reload, .formSelect, .table {
 	display:block;
 	position: absolute;
 }
@@ -22,7 +22,7 @@
     text-align: center;
 }
 
-#datepicker {
+#datePicker {
 	font-size: 62.5%;
 	margin-left: 245px;
 	margin-top:	41px;
@@ -41,6 +41,7 @@
 .table {
 	margin-left: 450px;
 	margin-top: 41px;
+	width: 100%;
 }
 
 .altRowClass { background: #DDDDDC; }
